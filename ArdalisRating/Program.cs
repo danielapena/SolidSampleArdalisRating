@@ -4,22 +4,40 @@ namespace ArdalisRating
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Ardalis Insurance Rating System Starting...");
+            var logger = new ConsoleLogger();
+            logger.Log("Ardalis Insurance Rating System Starting...");
 
-            var engine = new RatingEngine();
-            engine.Rate();
+            logger.Log("Loading policy.");
+            var policy = LoadPolicy();
 
-            if (engine.Rating > 0)
+            logger.Log("Rating policy...");
+            logger.Log("Starting rate.");
+            if (!policy.IsValid())
             {
-                Console.WriteLine($"Rating: {engine.Rating}");
+                logger.Log("Unknown policy type");
+            }
+
+            var rating = policy.Rate();
+
+            if (rating > 0)
+            {
+                logger.Log($"Rating: {rating}");
             }
             else
             {
-                Console.WriteLine("No rating produced.");
+                logger.Log("No rating produced.");
             }
 
+        }
+
+        private static IPolicy LoadPolicy()
+        {
+            var sourceName = "policy.json";
+            var policySource = new FilePolicySource().GetFromSource(sourceName);
+            JsonPolicySerializer jsonPolicySerializer = new JsonPolicySerializer();
+            return jsonPolicySerializer.GetPolicyFromJsonString(policySource);
         }
     }
 }
