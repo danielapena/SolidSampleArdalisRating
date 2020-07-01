@@ -4,14 +4,14 @@ using System;
 
 namespace ArdalisRating
 {
-    public class JsonPolicySerializer
+    public class JsonPolicySerializer : IPolicySerializer
     {
-        public IPolicy GetPolicyFromJsonString(string input)
+
+        public Policy GetPolicyFromString(string input)
         {
             try
             {
-                // TODO: Fix broken deserializer
-                return JsonConvert.DeserializeObject<IPolicy>(input, new StringEnumConverter());
+                return JsonConvert.DeserializeObject<Policy>(input, new StringEnumConverter());
             }
             catch (Exception e)
             {
